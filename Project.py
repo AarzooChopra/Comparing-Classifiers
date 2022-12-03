@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as lda
 from prettytable import PrettyTable as pt
+from timeit import default_timer as timer
 
 def main():
     #Read file and save data in an array
@@ -30,14 +31,21 @@ def main():
     train_att, train_class = splitCols(trainingData, cols)
     test_att, test_class = splitCols(testData, cols)
 
+    train_start = timer()
+
     #Train the classifier
     clf = lda()
     clf.fit(train_att, train_class)
     
-    #Test the classifier
+    train_end = timer()
 
+    test_start = timer()
+
+    #Test the classifier
     predict_class = clf.predict(test_att)
 
+    test_end = timer()
+    
     cm = np.array([0,0,0,0])        #[fp, tp, tn, fn]
     testLen = len(test_class)
 
@@ -58,7 +66,9 @@ def main():
     table = pt(['False Positive: ' + str(cm[0]), 'True Positive: ' + str(cm[1])])
     table.add_row(['True Negative: ' + str(cm[2]), 'False Negative: ' + str(cm[3])])
 
-    print('\n' + str(table) + '\n')   
+    print('\n' + str(table) + '\n') 
+    print('Training time = ' + str(format((train_end - train_start) * pow(10, 3), '0.2f')) + ' ms\n')  
+    print('Testing time = ' + str(format((test_end - test_start) * pow(10, 3), '0.2f')) + ' ms\n')  
     
     # #Check
     # check(test_class, testLen)
@@ -78,6 +88,6 @@ def check(test_class, testLen):
             a += 1
         else:
             b += 1
-    print(a, b) 
+    print('Number of elements in A = ', a, '\nNumber of elements in B = ', b, '\n') 
 
 main()
