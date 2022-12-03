@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as lda
+from prettytable import PrettyTable as pt
 
 def main():
     #Read file and save data in an array
@@ -34,15 +35,49 @@ def main():
     clf.fit(train_att, train_class)
     
     #Test the classifier
+
+    predict_class = clf.predict(test_att)
+
+    cm = np.array([0,0,0,0])        #[fp, tp, tn, fn]
+    testLen = len(test_class)
+
+    #Build the Confusion Matrix
+    for i in range(testLen):
+        if test_class[i] == 1:
+            if predict_class[i] == 0:
+                cm[0] += 1
+            else:
+                cm[2] += 1
+        else:
+            if predict_class[i] == 0:
+                cm[1] += 1
+            else:
+                cm[3] += 1
+
+    #Print the Confusion Matrix in a table
+    table = pt(['False Positive: ' + str(cm[0]), 'True Positive: ' + str(cm[1])])
+    table.add_row(['True Negative: ' + str(cm[2]), 'False Negative: ' + str(cm[3])])
+
+    print('\n' + str(table) + '\n')   
     
-    # print(test_class[160], '\n')
-    # print(clf.predict([test_att[160]]))    
-    # print(clf.predict([[-1.99,-6.6,4.82,-0.42]]))
+    # #Check
+    # check(test_class, testLen)
 
 #Splits columns
 def splitCols(data, cols):
     x = data[:,:cols]
     y = data[:,-1]
     return x, y
+
+#Check if the confusion matrix is correct (number of elements in each class)
+def check(test_class, testLen):
+    a = 0
+    b = 0
+    for i in range(testLen):
+        if test_class[i] == 0:
+            a += 1
+        else:
+            b += 1
+    print(a, b) 
 
 main()
