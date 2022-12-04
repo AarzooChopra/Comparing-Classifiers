@@ -32,7 +32,7 @@ def main():
 
     train_start = timer()
 
-    x = "2"
+    x = "-1"
     
     #Ask user for LDA or SVM
     while x not in ["0", "1"]:
