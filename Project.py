@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as lda
+from sklearn import svm
 from prettytable import PrettyTable as pt
 from timeit import default_timer as timer
 
@@ -12,8 +13,6 @@ def main():
 
     #Shuffle the rows
     np.random.shuffle(data)
-
-    # print(len(data[0]))
 
     #Find total number of points, number of training data points and number of test data points
     totDataPts = len(data)
@@ -33,8 +32,18 @@ def main():
 
     train_start = timer()
 
+    x = "2"
+    
+    #Ask user for LDA or SVM
+    while x not in ["0", "1"]:
+        x = input('Type "0" for Linear Disciminant Analysis or "1" for Support Vector Machine: ')
+
     #Train the classifier
-    clf = lda()
+    if x == "0":
+        clf = lda()
+    else:
+        clf = svm.SVC(kernel='linear')
+
     clf.fit(train_att, train_class)
     
     train_end = timer()
